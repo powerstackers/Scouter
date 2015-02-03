@@ -3,3 +3,5 @@
 4251_Cougars
 6253_Avalanche
 5029_Powerstackers
+55_Miners
+1001_Hacksaw

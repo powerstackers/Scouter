@@ -1,8 +1,12 @@
 package tournaments;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import matches.Match;
 import matches.MatchesList;
 import teams.Team;
@@ -12,7 +16,7 @@ import userinterface.ConsoleWindow;
 public class Tournament {
 	
 	public static String tournamentSavePath = "data/tournaments/";
-	public static String tournamentSaveExt = "";
+	public static String tournamentSaveExt = ".dat";
 
 	private TeamsList roster = new TeamsList();
 	private MatchesList matches = new MatchesList();
@@ -20,7 +24,6 @@ public class Tournament {
 	private String eventName = "";
 	private String eventLocation = "";
 	
-	@SuppressWarnings("unused")
 	private ConsoleWindow cons = new ConsoleWindow();
 	
 	public void setEventName(String eventName){
@@ -67,14 +70,49 @@ public class Tournament {
 		this.cons = cons;
 	}
 	
-	public void saveData(){
+	/**
+	 * Save a tournament object to a file.
+	 * @param tour
+	 * @param file
+	 */
+	public static void save(Tournament tour, File file){
 		try{
-			@SuppressWarnings("resource")
-			PrintWriter writer = new PrintWriter(tournamentSavePath + eventName + tournamentSaveExt);
-			writer.println("teamsList=");
+			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file));
+			out.writeObject(tour);
+			out.close();
 		}catch(FileNotFoundException ex){
-			
+			ex.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * Load a tournament object from a file.
+	 * @param file
+	 * @return
+	 */
+	public static Tournament load(File file){
+		Tournament tour = null;
+		
+		try {
+			ObjectInputStream in =  new ObjectInputStream(new FileInputStream(file));
+			tour = (Tournament) in.readObject();
+			in.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		if(tour==null){
+			tour = new Tournament();
+			tour.cons.printConsoleLine("There was a problem reading the tournament data.");
+		}
+		
+		return tour;
 	}
 	
 	public static void main(String[] args) {
