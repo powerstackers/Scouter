@@ -1,4 +1,5 @@
 package matches;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -15,16 +16,22 @@ import userinterface.ConsoleWindow;
  * @author Jonathan Thomas
  *
  */
-public class Match {
-		// Constants to identify alliance members, match types
-	public static final int RED_1 	= 0;
-	public static final int RED_2 	= 1;
-	public static final int BLUE_1 	= 2;
-	public static final int BLUE_2 	= 3;
-	public static final boolean MATCHTYPE_QUALIFICATION = true;
-	public static final boolean MATCHTYPE_FINAL 		= false;
-	public static final int RED_WINS 	= 1;
-	public static final int BLUE_WINS 	= 2;
+public class Match implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1078827596407225237L;
+	
+	// Constants to identify alliance members, match types
+	public static final transient int RED_1 	= 0;
+	public static final transient int RED_2 	= 1;
+	public static final transient int BLUE_1 	= 2;
+	public static final transient int BLUE_2 	= 3;
+	public static final transient boolean MATCHTYPE_QUALIFICATION = true;
+	public static final transient boolean MATCHTYPE_FINAL 		= false;
+	public static final transient int RED_WINS 	= 1;
+	public static final transient int BLUE_WINS 	= 2;
+	public static final transient int TIE_GAME	= 3;
 	
 	// The console window to be used for console output by this object
 	ConsoleWindow cons = new ConsoleWindow();

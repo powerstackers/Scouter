@@ -2,6 +2,9 @@ package teams;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -53,8 +56,8 @@ public class TeamsList {
 	 */
 	public TeamsList(Team[] teams){
 		// Add the teams into the list
-		for(int i = 0; i < teams.length; i++){
-			addTeam(teams[i]);
+		for(Team team: teams){
+			addTeam(team);
 		}
 	}
 	
@@ -73,7 +76,7 @@ public class TeamsList {
 	 * Updates the visual JTable with the teams currently in the list. This method must be called
 	 * every time there is a change to the list.
 	 */
-	private void refreshTeamsTable(){
+	public void refreshTeamsTable(){
 		// Create arrays to hold the column headers and the team's information
 		String[] columnHeaders = {"Team #", "Team Name", "RP", "QP"};
 		Object[][] teamsList = new Object[teams.size()][4];
@@ -112,6 +115,7 @@ public class TeamsList {
 		teams.add(team);
 		cons.printConsoleLine("Added team: " + team.toString());
 		refreshTeamsTable();
+		addTeamToRoster(team, new File(teamsListFilePath+"roster"+teamsListFileExt));
 	}
 	
 	/**
@@ -125,8 +129,10 @@ public class TeamsList {
 		if(index < 0 || index > teams.size() - 1)
 			throw new IndexOutOfBoundsException();
 		cons.printConsoleLine("Team removed: " + teams.get(index).toString());
+		removeTeamFromRoster(teams.get(index), new File(teamsListFilePath+"roster"+teamsListFileExt));
 		teams.remove(index);
 		refreshTeamsTable();
+		
 	}
 	
 	/**
@@ -248,8 +254,58 @@ public class TeamsList {
 		in.close();
 	}
 	
+	/**
+	 * Serialize this class to a file.
+	 */
 	public static void save(){
 		
+	}
+	
+	/**
+	 * Add a team to the roster file.
+	 * @param team
+	 * @param roster
+	 */
+	public void addTeamToRoster(Team team, File roster){
+		try {
+			// Create a PrintWriter to write the team to the file
+			// Pass it a new FileWriter in append mode
+			PrintWriter writer = new PrintWriter(new FileWriter(roster, true));
+			writer.println(team.getSaveFileName());
+			writer.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Remove a team from the roster file.
+	 */
+	public void removeTeamFromRoster(Team team, File roster){
+		try {
+			// Create a scanner, and read in all the current roster data
+			Scanner in = new Scanner(roster);
+			ArrayList<String> teamsList = new ArrayList<String>();
+			while(in.hasNext())
+				teamsList.add(in.nextLine());
+			in.close();
+			
+			// Check to see if the given team matches any in the roster
+			for(String name: teamsList)
+				if(name.equals(team.getSaveFileName()))
+					// If the team is found, remove it
+					teamsList.remove(name);
+			
+			// Print the remaining teams back into the file
+			PrintWriter writer = new PrintWriter(roster);
+			for(String name: teamsList)
+				writer.println(name);
+			writer.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public static void main(String args[]){

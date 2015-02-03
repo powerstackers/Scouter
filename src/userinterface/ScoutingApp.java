@@ -4,13 +4,10 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-
-import matches.Match;
-import matches.MatchesList;
-import teams.Team;
 
 /**
  * An application for storing, viewing, and tracking information about FIRST Tech Challenge
@@ -65,11 +62,19 @@ public class ScoutingApp extends JFrame{
 		
 		teamsListPanel.setConsoleWindow(console);
 		
+		addWindowListener(new java.awt.event.WindowAdapter(){
+			public void windowClosing(WindowEvent e){
+				teamsListPanel.list.saveAllTeams();
+				matchesListPanel.list.saveAllMatches();
+				System.exit(0);
+			}
+		});
+		console.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		setTitle("Scouting Application");
 		setSize(1000, 600);
 		setLocationRelativeTo(null);
-		//setExtendedState(MAXIMIZED_BOTH);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setExtendedState(MAXIMIZED_BOTH);
+		setDefaultCloseOperation(HIDE_ON_CLOSE);
 		setVisible(true);
 		setExtendedState(getExtendedState() | MAXIMIZED_BOTH);
 	}
@@ -117,24 +122,6 @@ public class ScoutingApp extends JFrame{
 	}
 	
 	public static void main(String[] args) {		
-		ScoutingApp frame = new ScoutingApp();
-		frame.console.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-		
-		Team[] teamsArray = {new Team(5029, "Powerstackers"), new Team(4251, "Cougar Robotics"), 
-				new Team(5501, "USS Enterprise"), new Team(5035, "Some random team")};
 
-		Match[] matchesArray = {new Match(teamsArray, Match.MATCHTYPE_QUALIFICATION, 1), 
-				new Match(teamsArray, Match.MATCHTYPE_QUALIFICATION, 2)};
-		
-		matchesArray[0].setRedScore(50);
-		
-		matchesArray[1].setRedScore(60);
-		matchesArray[1].setBlueScore(67);
-		
-		frame.matchesListPanel.list = new MatchesList(matchesArray);
-		
-		for(int i = 0; i < teamsArray.length; i++){
-			frame.teamsListPanel.getList().addTeam(teamsArray[i]);
-		}
 	}
 }

@@ -1,5 +1,7 @@
 package userinterface;
 
+import java.awt.GridLayout;
+
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -46,6 +48,7 @@ public class TeamInfoPanel extends JPanel{
 		titleLabel.setText("Team " + team.getTeamNumber() + ": " + team.getTeamName());
 		averageScoreLabel.setText("Average Score: " + team.getAverageScore());
 		descriptionLabel.setText("Description: " + team.getDescription());
+		this.setLayout(new GridLayout(3, 1));
 		add(titleLabel);
 		add(averageScoreLabel);
 		add(descriptionLabel);

@@ -6,7 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
+import java.io.FileNotFoundException;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -18,7 +18,6 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
 
-import matches.Match;
 import teams.TeamsList;
 import teams.Team;
 
@@ -31,13 +30,11 @@ import teams.Team;
  *
  */
 public class TeamsListPanel extends JPanel{
-	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	
-	
+	private static final long serialVersionUID = 3951205730673488378L;
+
 	/**
 	 * The list is the TeamsList object that stores all the teams displayed in this panel.
 	 */
@@ -59,6 +56,15 @@ public class TeamsListPanel extends JPanel{
 	 * editing the list.
 	 */
 	public TeamsListPanel(){
+		try {
+			list.loadFromFile("roster.txt");
+			list.refreshTeamsTable();
+		} catch (FileNotFoundException e) {
+			list.cons.printConsoleLine("There was a problem reading the team list data");
+		}
+		
+		
+		
 		this.setBorder(new TitledBorder("Teams"));
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
@@ -178,18 +184,8 @@ public class TeamsListPanel extends JPanel{
 	}
 
 	public static void main(String[] args) {
-		
-		Team[] teamsArray = new Team[4];
-		teamsArray[Match.RED_1] = new Team(5029, "Powerstackers");
-		teamsArray[Match.RED_2] = new Team(4251, "Cougar Robotics");
-		teamsArray[Match.BLUE_1] = new Team(5501, "USS Enterprise");
-		teamsArray[Match.BLUE_2] = new Team(5035, "Some random team");
-
 		TeamsListPanel teamsFrame = new TeamsListPanel();
-		
-		for(int i = 0; i < teamsArray.length; i++){
-			teamsFrame.list.addTeam(teamsArray[i]);
-		}
+		teamsFrame.list.cons.setVisible(true);
 		
 		JFrame frame = new JFrame();
 		frame.add(teamsFrame);
